@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTIN Product Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --accent-color: #2196F3;
+            --hover-color: #f0f0f0;
+            --overlay-bg: rgba(0, 0, 0, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #404040;
+            --accent-color: #64B5F6;
+            --hover-color: #333333;
+            --overlay-bg: rgba(0, 0, 0, 0.95);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .header {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        .theme-toggle {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.9;
+        }
+
+        .controls {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+        }
+
+        [data-theme="dark"] .warning-box {
+            background-color: #4a3800;
+            border-color: #ff9800;
+        }
+
+        .warning-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .warning-text {
+            color: #856404;
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        [data-theme="dark"] .warning-text {
+            color: #ffc107;
+        }
+
+        .warning-text strong {
+            font-weight: 600;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .filter-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .filter-item label {
+            cursor: pointer;
+            font-size: 0.95rem;
+            user-select: none;
+        }
+
+        .stats {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .table-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem 2rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: var(--hover-color);
+        }
+
+        .qr-cell {
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: transform 0.2s;
+            background-color: white;
+            padding: 4px;
+        }
+
+        .qr-code:hover {
+            transform: scale(1.05);
+        }
+
+        .qr-placeholder {
+            width: 80px;
+            height: 80px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-bg);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .overlay.active {
+            display: flex;
+        }
+
+        .overlay-image {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            background-color: white;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .header-content {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .theme-toggle {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+                flex-shrink: 0;
+            }
+
+            .filters {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.8rem;
+            }
+
+            .filter-item {
+                font-size: 0.9rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.6rem 0.4rem;
+            }
+
+            th:first-child, td:first-child {
+                width: 25%;
+            }
+
+            th:nth-child(2), td:nth-child(2) {
+                width: 50%;
+            }
+
+            th:last-child, td:last-child {
+                width: 25%;
+            }
+
+            .qr-code, .qr-placeholder {
+                width: 60px;
+                height: 60px;
+            }
+
+            .controls {
+                padding: 0 1rem;
+            }
+
+            .table-container {
+                padding: 0 1rem 2rem;
+            }
+
+            .warning-box {
+                padding: 0.8rem 1rem;
+                gap: 0.6rem;
+            }
+
+            .warning-icon {
+                font-size: 1.3rem;
+            }
+
+            .warning-text {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            .theme-toggle {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .filters {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.6rem;
+            }
+
+            .filter-item {
+                font-size: 0.85rem;
+            }
+
+            .filter-item input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.5rem 0.3rem;
+            }
+
+            .qr-code, .qr-placeholder {
+                width: 50px;
+                height: 50px;
+            }
+
+            .search-box {
+                font-size: 0.9rem;
+                padding: 0.7rem 0.8rem;
+            }
+
+            .warning-box {
+                padding: 0.7rem 0.8rem;
+                gap: 0.5rem;
+            }
+
+            .warning-icon {
+                font-size: 1.2rem;
+            }
+
+            .warning-text {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>GTIN Product Database</h1>
+                <div class="subtitle">Webseite bereitgestellt von Nando.</div>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">🌙 Dark Mode</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="warning-box">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-text">
+                Bitte vergleicht die TU Größe auf dem Scanner mit dem Produkt um Fehler zu vermeiden.<br>
+                <strong>Beispiel:</strong> Kopfsalat(12/TU) und Endivien Salat(6/TU), sowie MeinLand / PN.
+            </div>
+        </div>
+
+        <input type="text" class="search-box" id="searchBox" placeholder="Search products by ID or name...">
+
+        <div class="filters">
+            <div class="filter-item">
+                <input type="checkbox" id="filterMeinLand" value="MeinLand">
+                <label for="filterMeinLand">MeinLand</label>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="filterPn" value="PN">
+                <label for="filterPn">PN</label>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="filterBio" value="Bio">
+                <label for="filterBio">Bio</label>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="filterDemeter" value="Demeter">
+                <label for="filterDemeter">Demeter</label>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="filterEdeka" value="Edeka">
+                <label for="filterEdeka">Edeka</label>
+            </div>
+        </div>
+
+        <div class="stats" id="stats">Loading...</div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th class="qr-cell">QR Code</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="3" class="loading">Loading products...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeOverlay()">
+        <img class="overlay-image" id="overlayImage" src="" alt="QR Code">
+    </div>
+
+    <script>
+        let allProducts = [];
+        let filteredProducts = [];
+
+        // Parse CSV line properly (handles quoted fields with commas)
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                const nextChar = line[i + 1];
+
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        // Escaped quote
+                        current += '"';
+                        i++; // Skip next quote
+                    } else {
+                        // Toggle quote state
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    // Field separator
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+
+            // Add last field
+            result.push(current.trim());
+            return result;
+        }
+
+        // Load CSV data
+        async function loadProducts() {
+            try {
+                const response = await fetch('output.csv');
+                const text = await response.text();
+                const lines = text.trim().split('\n');
+
+                // Skip header and parse CSV
+                allProducts = lines.slice(1).map(line => {
+                    const parts = parseCSVLine(line);
+                    return {
+                        id: parts[0] || '',
+                        name: parts[1] || '',
+                        gtin: parts[3] || ''
+                    };
+                }).filter(product => product.id && product.name && product.gtin);
+
+                // Remove duplicates based on Product_ID and GTIN
+                const seen = new Set();
+                allProducts = allProducts.filter(product => {
+                    const key = `${product.id}-${product.gtin}`;
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
+
+                filterAndDisplay();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('tableBody').innerHTML =
+                    '<tr><td colspan="3" class="no-results">Error loading products</td></tr>';
+            }
+        }
+
+        // Filter and display products
+        function filterAndDisplay() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const activeFilters = Array.from(document.querySelectorAll('.filter-item input:checked'))
+                .map(cb => cb.value);
+
+            filteredProducts = allProducts.filter(product => {
+                // Search filter
+                const matchesSearch = !searchTerm ||
+                    product.id.toLowerCase().includes(searchTerm) ||
+                    product.name.toLowerCase().includes(searchTerm);
+
+                // Category filters (case-insensitive) - ALL filters must match (AND logic)
+                const matchesFilters = activeFilters.length === 0 ||
+                    activeFilters.every(filter => product.name.toLowerCase().includes(filter.toLowerCase()));
+
+                return matchesSearch && matchesFilters;
+            });
+
+            displayProducts();
+            updateStats();
+        }
+
+        // Display products in table
+        function displayProducts() {
+            const tbody = document.getElementById('tableBody');
+
+            if (filteredProducts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="no-results">No products found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filteredProducts.map(product => `
+                <tr>
+                    <td>${escapeHtml(product.id)}</td>
+                    <td>${escapeHtml(product.name)}</td>
+                    <td class="qr-cell">
+                        <div class="qr-placeholder" data-gtin="${escapeHtml(product.gtin)}"></div>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Setup lazy loading
+            setupLazyLoading();
+        }
+
+        // Lazy loading for QR codes
+        function setupLazyLoading() {
+            const options = {
+                root: null,
+                rootMargin: '50px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const placeholder = entry.target;
+                        const gtin = placeholder.getAttribute('data-gtin');
+
+                        if (gtin && !placeholder.classList.contains('loaded')) {
+                            loadQRCode(placeholder, gtin);
+                            observer.unobserve(placeholder);
+                        }
+                    }
+                });
+            }, options);
+
+            document.querySelectorAll('.qr-placeholder').forEach(placeholder => {
+                observer.observe(placeholder);
+            });
+        }
+
+        // Load QR code image
+        function loadQRCode(placeholder, gtin) {
+            const img = document.createElement('img');
+            img.className = 'qr-code';
+            img.src = `api.php?text=${encodeURIComponent(gtin)}&size=200`;
+            img.alt = `QR Code for ${gtin}`;
+            img.onclick = (e) => {
+                e.stopPropagation();
+                showOverlay(gtin);
+            };
+
+            img.onload = () => {
+                placeholder.replaceWith(img);
+            };
+
+            img.onerror = () => {
+                placeholder.style.backgroundColor = '#ffcccc';
+                placeholder.title = 'Failed to load QR code';
+            };
+
+            placeholder.classList.add('loaded');
+        }
+
+        // Show QR code overlay
+        function showOverlay(gtin) {
+            const overlay = document.getElementById('overlay');
+            const overlayImage = document.getElementById('overlayImage');
+            overlayImage.src = `api.php?text=${encodeURIComponent(gtin)}&size=500`;
+            overlay.classList.add('active');
+        }
+
+        // Close overlay
+        function closeOverlay() {
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Update statistics
+        function updateStats() {
+            const stats = document.getElementById('stats');
+            stats.textContent = `Showing ${filteredProducts.length} of ${allProducts.length} products`;
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
+            const icon = document.getElementById('theme-icon');
+            icon.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            const icon = document.getElementById('theme-icon');
+            icon.textContent = savedTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
+        document.getElementById('searchBox').addEventListener('input', filterAndDisplay);
+
+        document.querySelectorAll('.filter-item input').forEach(checkbox => {
+            checkbox.addEventListener('change', filterAndDisplay);
+        });
+
+        // Close overlay with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeOverlay();
+            }
+        });
+
+        // Initialize
+        loadTheme();
+        loadProducts();
+    </script>
+</body>
+</html>
+

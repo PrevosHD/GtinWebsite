@@ -431,7 +431,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.2);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -445,8 +445,8 @@
         .barcode-modal-content {
             background-color: var(--bg-primary);
             border-radius: 8px;
-            padding: 2rem;
-            max-width: 600px;
+            padding: 1.5rem;
+            max-width: 350px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -462,7 +462,6 @@
             padding: 0.4rem;
             border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .qr-item.qr-white {
@@ -486,20 +485,15 @@
             background-color: #ccaa00;
         }
 
-        .qr-item:hover {
-            transform: scale(1.15);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
         .qr-item.expanded {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(1) !important;
+            transform: translate(-50%, -50%);
             z-index: 2000;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .qr-label {
@@ -529,15 +523,15 @@
         }
 
         .qr-image {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             display: block;
             border-radius: 2px;
         }
 
         .qr-item.expanded .qr-image {
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
         }
 
         .qr-overlay {
@@ -547,7 +541,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: transparent;
             z-index: 1999;
         }
 

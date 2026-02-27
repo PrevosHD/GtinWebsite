@@ -485,15 +485,83 @@
             background-color: #ccaa00;
         }
 
-        .qr-item.expanded {
+        .qr-popup {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.8);
             z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .qr-popup.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .qr-popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
             padding: 1rem;
             border-radius: 6px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .qr-popup-content.qr-white {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+        }
+
+        .qr-popup-content.qr-orange {
+            background-color: #cc6600;
+        }
+
+        .qr-popup-content.qr-green {
+            background-color: #00cc00;
+        }
+
+        .qr-popup-content.qr-blue {
+            background-color: #6699ff;
+        }
+
+        .qr-popup-content.qr-yellow {
+            background-color: #ccaa00;
+        }
+
+        .qr-popup-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .qr-popup-content.qr-white .qr-popup-label {
+            color: #000000;
+        }
+
+        .qr-popup-content.qr-orange .qr-popup-label {
+            color: #ffffff;
+        }
+
+        .qr-popup-content.qr-green .qr-popup-label {
+            color: #000000;
+        }
+
+        .qr-popup-content.qr-blue .qr-popup-label {
+            color: #ffffff;
+        }
+
+        .qr-popup-content.qr-yellow .qr-popup-label {
+            color: #000000;
+        }
+
+        .qr-popup-image {
+            width: 250px;
+            height: 250px;
+            display: block;
+            border-radius: 2px;
         }
 
         .qr-label {
@@ -527,11 +595,6 @@
             height: 70px;
             display: block;
             border-radius: 2px;
-        }
-
-        .qr-item.expanded .qr-image {
-            width: 250px;
-            height: 250px;
         }
 
         .qr-overlay {
@@ -1131,12 +1194,33 @@
         function expandQR(event) {
             event.stopPropagation();
             const item = event.currentTarget;
+            const img = item.querySelector('.qr-image');
+            const label = item.querySelector('.qr-label');
 
             // Close any previously expanded QR
             closeExpandedQR();
 
-            // Expand this QR
-            item.classList.add('expanded');
+            // Create a popup modal
+            const popup = document.createElement('div');
+            popup.className = 'qr-popup';
+            popup.innerHTML = `
+                <div class="qr-popup-content">
+                    <div class="qr-popup-label">${label.textContent}</div>
+                    <img src="${img.src}" alt="${label.textContent}" class="qr-popup-image">
+                </div>
+            `;
+
+            // Copy the background color class
+            const colorClass = item.className.match(/qr-(white|orange|green|blue|yellow)/);
+            if (colorClass) {
+                popup.querySelector('.qr-popup-content').classList.add(colorClass[0]);
+            }
+
+            document.body.appendChild(popup);
+
+            // Trigger animation
+            setTimeout(() => popup.classList.add('active'), 10);
+
             const overlay = document.getElementById('qrOverlay');
             if (overlay) {
                 overlay.classList.add('active');
@@ -1144,9 +1228,10 @@
         }
 
         function closeExpandedQR() {
-            const expandedItem = document.querySelector('.qr-item.expanded');
-            if (expandedItem) {
-                expandedItem.classList.remove('expanded');
+            const popup = document.querySelector('.qr-popup');
+            if (popup) {
+                popup.classList.remove('active');
+                setTimeout(() => popup.remove(), 300);
             }
             const overlay = document.getElementById('qrOverlay');
             if (overlay) {

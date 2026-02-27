@@ -457,30 +457,64 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
+            gap: 0.4rem;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
             background-color: var(--bg-secondary);
-            border-radius: 6px;
-            transition: transform 0.2s;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .qr-item:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .qr-item.expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            z-index: 2000;
+            padding: 2rem;
+            background-color: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         .qr-label {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-primary);
-            opacity: 0.9;
+            opacity: 0.8;
         }
 
         .qr-image {
-            width: 200px;
-            height: 200px;
+            width: 80px;
+            height: 80px;
             display: block;
-            border-radius: 4px;
+            border-radius: 3px;
+        }
+
+        .qr-item.expanded .qr-image {
+            width: 300px;
+            height: 300px;
+        }
+
+        .qr-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+        }
+
+        .qr-overlay.active {
+            display: block;
         }
 
         .barcode-close-button {
@@ -722,30 +756,33 @@
         </div>
     </div>
 
+    <!-- QR Overlay for expanded view -->
+    <div class="qr-overlay" id="qrOverlay" onclick="closeExpandedQR()"></div>
+
     <!-- Easter Egg Barcode Modal -->
     <div class="barcode-modal-overlay" id="barcodeModal">
         <div class="barcode-modal-content">
-            <div class="qr-item">
+            <div class="qr-item" onclick="expandQR(event)">
                 <div class="qr-label">21 Totes</div>
                 <img src="https://qr.bocchi.network/api.php?text=1700022137%0A1700032884%0A1400283206%0A1400266235%0A1700036729%0A1700031926%0A1700022647%0A1400261137%0A1700007465%0A1400248300%0A1700018126%0A1400287896%0A1400293924%0A1400250174%0A1400263516%0A1400002081%0A1400263668%0A1700035354%0A1400136637%0A1700018775%0A1700013533&size=200&fg=000000&bg=f5f5f5" alt="21 Totes QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item">
+            <div class="qr-item" onclick="expandQR(event)">
                 <div class="qr-label">12 Totes</div>
                 <img src="https://qr.bocchi.network/api.php?text=1700022137%0A1700032884%0A1400283206%0A1400266235%0A1700036729%0A1700031926%0A1700022647%0A1400261137%0A1700007465%0A1400248300%0A1700018126%0A1400287896&size=200&fg=000000&bg=f5f5f5" alt="12 Totes QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item">
+            <div class="qr-item" onclick="expandQR(event)">
                 <div class="qr-label">CONSO</div>
                 <img src="https://qr.bocchi.network/api.php?text=CONSOLIDATION&size=200&fg=000000&bg=f5f5f5" alt="CONSO QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item">
+            <div class="qr-item" onclick="expandQR(event)">
                 <div class="qr-label">Null</div>
                 <img src="https://qr.bocchi.network/api.php?text=0&size=200&fg=000000&bg=f5f5f5" alt="Null QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item">
+            <div class="qr-item" onclick="expandQR(event)">
                 <div class="qr-label">UNKNOWN</div>
                 <img src="https://qr.bocchi.network/api.php?text=UNKNOWN&size=200&fg=000000&bg=f5f5f5" alt="UNKNOWN QR Code" class="qr-image">
             </div>
@@ -1053,6 +1090,33 @@
             const modal = document.getElementById('barcodeModal');
             if (modal) {
                 modal.classList.remove('active');
+            }
+            closeExpandedQR();
+        }
+
+        function expandQR(event) {
+            event.stopPropagation();
+            const item = event.currentTarget;
+
+            // Close any previously expanded QR
+            closeExpandedQR();
+
+            // Expand this QR
+            item.classList.add('expanded');
+            const overlay = document.getElementById('qrOverlay');
+            if (overlay) {
+                overlay.classList.add('active');
+            }
+        }
+
+        function closeExpandedQR() {
+            const expandedItem = document.querySelector('.qr-item.expanded');
+            if (expandedItem) {
+                expandedItem.classList.remove('expanded');
+            }
+            const overlay = document.getElementById('qrOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
             }
         }
 

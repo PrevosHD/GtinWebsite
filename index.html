@@ -457,44 +457,82 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.4rem;
-            margin-bottom: 0.8rem;
-            padding: 0.5rem;
-            background-color: var(--bg-secondary);
+            gap: 0.3rem;
+            margin-bottom: 0.6rem;
+            padding: 0.4rem;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
+        .qr-item.qr-white {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+        }
+
+        .qr-item.qr-orange {
+            background-color: #cc6600;
+        }
+
+        .qr-item.qr-green {
+            background-color: #00cc00;
+        }
+
+        .qr-item.qr-blue {
+            background-color: #6699ff;
+        }
+
+        .qr-item.qr-yellow {
+            background-color: #ccaa00;
+        }
+
         .qr-item:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .qr-item.expanded {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1) !important;
             z-index: 2000;
-            padding: 2rem;
-            background-color: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
         .qr-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            color: var(--text-primary);
-            opacity: 0.8;
+            opacity: 0.9;
+        }
+
+        .qr-item.qr-white .qr-label {
+            color: #000000;
+        }
+
+        .qr-item.qr-orange .qr-label {
+            color: #ffffff;
+        }
+
+        .qr-item.qr-green .qr-label {
+            color: #000000;
+        }
+
+        .qr-item.qr-blue .qr-label {
+            color: #ffffff;
+        }
+
+        .qr-item.qr-yellow .qr-label {
+            color: #000000;
         }
 
         .qr-image {
             width: 80px;
             height: 80px;
             display: block;
-            border-radius: 3px;
+            border-radius: 2px;
         }
 
         .qr-item.expanded .qr-image {
@@ -762,29 +800,29 @@
     <!-- Easter Egg Barcode Modal -->
     <div class="barcode-modal-overlay" id="barcodeModal">
         <div class="barcode-modal-content">
-            <div class="qr-item" onclick="expandQR(event)">
+            <div class="qr-item qr-white" onclick="expandQR(event)">
                 <div class="qr-label">21 Totes</div>
-                <img src="https://qr.bocchi.network/api.php?text=1700022137%0A1700032884%0A1400283206%0A1400266235%0A1700036729%0A1700031926%0A1700022647%0A1400261137%0A1700007465%0A1400248300%0A1700018126%0A1400287896%0A1400293924%0A1400250174%0A1400263516%0A1400002081%0A1400263668%0A1700035354%0A1400136637%0A1700018775%0A1700013533&size=200&fg=000000&bg=f5f5f5" alt="21 Totes QR Code" class="qr-image">
+                <img src="https://qr.bocchi.network/api.php?text=1700022137%0A1700032884%0A1400283206%0A1400266235%0A1700036729%0A1700031926%0A1700022647%0A1400261137%0A1700007465%0A1400248300%0A1700018126%0A1400287896%0A1400293924%0A1400250174%0A1400263516%0A1400002081%0A1400263668%0A1700035354%0A1400136637%0A1700018775%0A1700013533&size=200&fg=000000&bg=ffffff" alt="21 Totes QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item" onclick="expandQR(event)">
+            <div class="qr-item qr-orange" onclick="expandQR(event)">
                 <div class="qr-label">12 Totes</div>
-                <img src="https://qr.bocchi.network/api.php?text=1700022137%0A1700032884%0A1400283206%0A1400266235%0A1700036729%0A1700031926%0A1700022647%0A1400261137%0A1700007465%0A1400248300%0A1700018126%0A1400287896&size=200&fg=000000&bg=f5f5f5" alt="12 Totes QR Code" class="qr-image">
+                <img src="https://qr.bocchi.network/api.php?text=1700022137%0A1700032884%0A1400283206%0A1400266235%0A1700036729%0A1700031926%0A1700022647%0A1400261137%0A1700007465%0A1400248300%0A1700018126%0A1400287896&size=200&fg=000000&bg=cc6600" alt="12 Totes QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item" onclick="expandQR(event)">
+            <div class="qr-item qr-green" onclick="expandQR(event)">
                 <div class="qr-label">CONSO</div>
-                <img src="https://qr.bocchi.network/api.php?text=CONSOLIDATION&size=200&fg=000000&bg=f5f5f5" alt="CONSO QR Code" class="qr-image">
+                <img src="https://qr.bocchi.network/api.php?text=CONSOLIDATION&size=200&fg=000000&bg=00cc00" alt="CONSO QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item" onclick="expandQR(event)">
+            <div class="qr-item qr-blue" onclick="expandQR(event)">
                 <div class="qr-label">Null</div>
-                <img src="https://qr.bocchi.network/api.php?text=0&size=200&fg=000000&bg=f5f5f5" alt="Null QR Code" class="qr-image">
+                <img src="https://qr.bocchi.network/api.php?text=0&size=200&fg=000000&bg=6699ff" alt="Null QR Code" class="qr-image">
             </div>
 
-            <div class="qr-item" onclick="expandQR(event)">
+            <div class="qr-item qr-yellow" onclick="expandQR(event)">
                 <div class="qr-label">UNKNOWN</div>
-                <img src="https://qr.bocchi.network/api.php?text=UNKNOWN&size=200&fg=000000&bg=f5f5f5" alt="UNKNOWN QR Code" class="qr-image">
+                <img src="https://qr.bocchi.network/api.php?text=UNKNOWN&size=200&fg=000000&bg=ccaa00" alt="UNKNOWN QR Code" class="qr-image">
             </div>
 
             <button class="barcode-close-button" onclick="closeBarcodeModal()">Schließen</button>

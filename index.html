@@ -1114,6 +1114,8 @@
                 button.style.display = 'inline-block';
                 // Add a subtle animation pulse
                 button.style.animation = 'popIn 0.5s ease-out';
+                // Remember that Easter Egg was activated
+                localStorage.setItem('easterEggActivated', 'true');
             }
         }
 
@@ -1170,10 +1172,22 @@
             }
         });
 
+        // Check if Easter Egg was previously activated
+        function checkEasterEgg() {
+            const easterEggActivated = localStorage.getItem('easterEggActivated');
+            if (easterEggActivated === 'true') {
+                const button = document.getElementById('easterEggButton');
+                if (button) {
+                    button.style.display = 'inline-block';
+                }
+            }
+        }
+
         // Initialize
         loadTheme();
         loadProducts();
         checkModal();
+        checkEasterEgg();
     </script>
 </body>
 </html>

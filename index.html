@@ -492,18 +492,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 300px;
-            padding: 1rem;
+            padding: 0;
+            margin: 0;
         }
 
         .qr-code-container canvas {
             max-width: 100%;
             height: auto;
+            display: block;
         }
 
         .qr-code-container img {
             max-width: 100%;
             height: auto;
+            display: block;
         }
 
         .barcode-label {
@@ -1081,21 +1083,21 @@
         }
 
         function generateQRCodes() {
-            // 21 Totes
+            // 21 Totes - black on white
             const data21 = '1700022137\n1700032884\n1400283206\n1400266235\n1700036729\n1700031926\n1700022647\n1400261137\n1700007465\n1400248300\n1700018126\n1400287896\n1400293924\n1400250174\n1400263516\n1400002081\n1400263668\n1700035354\n1400136637\n1700018775\n1700013533';
             generateQRCode('qr-21-totes', data21, '#000000', '#ffffff');
 
-            // 12 Totes
+            // 12 Totes - black on orange
             const data12 = '1700022137\n1700032884\n1400283206\n1400266235\n1700036729\n1700031926\n1700022647\n1400261137\n1700007465\n1400248300\n1700018126\n1400287896';
-            generateQRCode('qr-12-totes', data12, '#ffffff', '#cc6600');
+            generateQRCode('qr-12-totes', data12, '#000000', '#cc6600');
 
-            // CONSO
+            // CONSO - black on green
             generateQRCode('qr-conso', 'CONSOLIDATION', '#000000', '#00cc00');
 
-            // Null
-            generateQRCode('qr-null', '0', '#ffffff', '#6699ff');
+            // Null - black on blue
+            generateQRCode('qr-null', '0', '#000000', '#6699ff');
 
-            // UNKNOWN
+            // UNKNOWN - black on yellow
             generateQRCode('qr-unknown', 'UNKNOWN', '#000000', '#ccaa00');
         }
 

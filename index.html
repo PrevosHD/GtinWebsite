@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GTIN Product Database</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -384,28 +385,43 @@
             font-size: 0.9rem;
             font-weight: 600;
             margin-left: 1rem;
-            animation: popIn 0.5s ease-out;
+            animation: popIn 0.6s ease-out, pulse 2s infinite 0.6s;
             box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            transition: all 0.3s ease;
         }
 
         .easter-egg-button:hover {
             background-color: #ff6666;
-            transform: scale(1.1);
+            transform: scale(1.15) rotate(2deg);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+        }
+
+        .easter-egg-button:active {
+            transform: scale(0.95);
         }
 
         @keyframes popIn {
             0% {
                 opacity: 0;
-                transform: scale(0.5);
+                transform: scale(0.3) rotate(-10deg);
                 box-shadow: 0 0 0 rgba(255, 68, 68, 0.8);
             }
             50% {
-                box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+                box-shadow: 0 0 25px rgba(255, 68, 68, 0.8);
             }
             100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: scale(1) rotate(0deg);
                 box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
             }
         }
 
@@ -472,34 +488,22 @@
             background-color: #ccaa00;
         }
 
-        .barcode-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-            white-space: pre-wrap;
-            word-break: break-all;
-            font-family: 'Courier New', monospace;
-            line-height: 1.8;
-            color: inherit;
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            padding: 1rem;
         }
 
-        .barcode-container.black-white .barcode-text {
-            color: #000000;
+        .qr-code-container canvas {
+            max-width: 100%;
+            height: auto;
         }
 
-        .barcode-container.orange .barcode-text {
-            color: #ffffff;
-        }
-
-        .barcode-container.green .barcode-text {
-            color: #000000;
-        }
-
-        .barcode-container.blue .barcode-text {
-            color: #ffffff;
-        }
-
-        .barcode-container.yellow .barcode-text {
-            color: #000000;
+        .qr-code-container img {
+            max-width: 100%;
+            height: auto;
         }
 
         .barcode-label {
@@ -669,7 +673,7 @@
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <span id="theme-icon">🌙 Dark Mode</span>
                 </button>
-                <button class="easter-egg-button" id="easterEggButton" onclick="openBarcodeModal()" style="display: none;">🔓 Secret</button>
+                <button class="easter-egg-button" id="easterEggButton" onclick="openBarcodeModal()" style="display: none;">Outbound 😏</button>
             </div>
         </div>
     </div>
@@ -753,58 +757,27 @@
         <div class="barcode-modal-content">
             <div class="barcode-container black-white">
                 <div class="barcode-label">21 Totes</div>
-                <div class="barcode-text">1700022137
-1700032884
-1400283206
-1400266235
-1700036729
-1700031926
-1700022647
-1400261137
-1700007465
-1400248300
-1700018126
-1400287896
-1400293924
-1400250174
-1400263516
-1400002081
-1400263668
-1700035354
-1400136637
-1700018775
-1700013533</div>
+                <div id="qr-21-totes" class="qr-code-container"></div>
             </div>
 
             <div class="barcode-container orange">
                 <div class="barcode-label">12 Totes</div>
-                <div class="barcode-text">1700022137
-1700032884
-1400283206
-1400266235
-1700036729
-1700031926
-1700022647
-1400261137
-1700007465
-1400248300
-1700018126
-1400287896</div>
+                <div id="qr-12-totes" class="qr-code-container"></div>
             </div>
 
             <div class="barcode-container green">
                 <div class="barcode-label">CONSO</div>
-                <div class="barcode-text">CONSOLIDATION</div>
+                <div id="qr-conso" class="qr-code-container"></div>
             </div>
 
             <div class="barcode-container blue">
                 <div class="barcode-label">Null</div>
-                <div class="barcode-text">0</div>
+                <div id="qr-null" class="qr-code-container"></div>
             </div>
 
             <div class="barcode-container yellow">
                 <div class="barcode-label">UNKNOWN</div>
-                <div class="barcode-text">!! UNKNOWN !!</div>
+                <div id="qr-unknown" class="qr-code-container"></div>
             </div>
 
             <button class="barcode-close-button" onclick="closeBarcodeModal()">Schließen</button>
@@ -1103,7 +1076,45 @@
             const modal = document.getElementById('barcodeModal');
             if (modal) {
                 modal.classList.add('active');
+                generateQRCodes();
             }
+        }
+
+        function generateQRCodes() {
+            // 21 Totes
+            const data21 = '1700022137\n1700032884\n1400283206\n1400266235\n1700036729\n1700031926\n1700022647\n1400261137\n1700007465\n1400248300\n1700018126\n1400287896\n1400293924\n1400250174\n1400263516\n1400002081\n1400263668\n1700035354\n1400136637\n1700018775\n1700013533';
+            generateQRCode('qr-21-totes', data21, '#000000', '#ffffff');
+
+            // 12 Totes
+            const data12 = '1700022137\n1700032884\n1400283206\n1400266235\n1700036729\n1700031926\n1700022647\n1400261137\n1700007465\n1400248300\n1700018126\n1400287896';
+            generateQRCode('qr-12-totes', data12, '#ffffff', '#cc6600');
+
+            // CONSO
+            generateQRCode('qr-conso', 'CONSOLIDATION', '#000000', '#00cc00');
+
+            // Null
+            generateQRCode('qr-null', '0', '#ffffff', '#6699ff');
+
+            // UNKNOWN
+            generateQRCode('qr-unknown', 'UNKNOWN', '#000000', '#ccaa00');
+        }
+
+        function generateQRCode(elementId, text, darkColor, lightColor) {
+            const container = document.getElementById(elementId);
+            if (!container) return;
+
+            // Clear previous content
+            container.innerHTML = '';
+
+            // Create QR code
+            const qr = new QRCode(container, {
+                text: text,
+                width: 250,
+                height: 250,
+                colorDark: darkColor,
+                colorLight: lightColor,
+                correctLevel: QRCode.CorrectLevel.H
+            });
         }
 
         function closeBarcodeModal() {

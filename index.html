@@ -436,7 +436,6 @@
             justify-content: center;
             align-items: center;
             overflow-y: auto;
-            pointer-events: none;
         }
 
         .barcode-modal-overlay.active {
@@ -495,11 +494,26 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.3);
             z-index: 2000;
         }
 
         .qr-popup-overlay.active {
+            display: block;
+        }
+
+        .qr-popup-overlay-dark {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2001;
+        }
+
+        .qr-popup-overlay-dark.active {
             display: block;
         }
 
@@ -508,7 +522,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
-            z-index: 2001;
+            z-index: 2002;
             opacity: 0;
             transition: all 0.3s ease;
         }
@@ -624,7 +638,6 @@
             bottom: 0;
             background-color: rgba(0, 0, 0, 0.3);
             z-index: 1999;
-            pointer-events: none;
         }
 
         .qr-overlay.active {
@@ -873,10 +886,13 @@
     </div>
 
     <!-- QR Overlay for expanded view -->
-    <div class="qr-overlay" id="qrOverlay"></div>
+    <div class="qr-overlay" id="qrOverlay" onclick="handleOverlayClick(event)"></div>
 
     <!-- QR Popup Overlay for expanded QR in menu -->
-    <div class="qr-popup-overlay" id="qrPopupOverlay" onclick="closeExpandedQR()"></div>
+    <div class="qr-popup-overlay" id="qrPopupOverlay" onclick="handleOverlayClick(event)"></div>
+
+    <!-- QR Popup Dark Overlay for expanded QR -->
+    <div class="qr-popup-overlay-dark" id="qrPopupOverlayDark" onclick="event.target === this && closeExpandedQR()"></div>
 
     <!-- Easter Egg Barcode Modal -->
     <div class="barcode-modal-overlay" id="barcodeModal">
@@ -906,7 +922,6 @@
                 <img src="api.php?text=UNKNOWN&size=400&fg=000000&bg=ccaa00" alt="UNKNOWN QR Code" class="qr-image">
             </div>
 
-            <button class="barcode-close-button" onclick="closeBarcodeModal()">✕</button>
         </div>
     </div>
 
@@ -1223,6 +1238,20 @@
             }
         }
 
+        function handleOverlayClick(event) {
+            if (event.target !== event.currentTarget) return;
+
+            // Check if a QR popup is currently open
+            const popup = document.querySelector('.qr-popup');
+            if (popup) {
+                // Close the popup first
+                closeExpandedQR();
+            } else {
+                // Close the menu
+                closeBarcodeModal();
+            }
+        }
+
         function expandQR(event) {
             event.stopPropagation();
             const item = event.currentTarget;
@@ -1250,10 +1279,10 @@
 
             document.body.appendChild(popup);
 
-            // Activate overlay
-            const overlay = document.getElementById('qrPopupOverlay');
-            if (overlay) {
-                overlay.classList.add('active');
+            // Activate dark overlay
+            const darkOverlay = document.getElementById('qrPopupOverlayDark');
+            if (darkOverlay) {
+                darkOverlay.classList.add('active');
             }
 
             // Trigger animation
@@ -1266,9 +1295,9 @@
                 popup.classList.remove('active');
                 setTimeout(() => popup.remove(), 300);
             }
-            const overlay = document.getElementById('qrPopupOverlay');
-            if (overlay) {
-                overlay.classList.remove('active');
+            const darkOverlay = document.getElementById('qrPopupOverlayDark');
+            if (darkOverlay) {
+                darkOverlay.classList.remove('active');
             }
         }
 

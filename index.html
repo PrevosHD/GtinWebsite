@@ -290,6 +290,89 @@
             font-size: 1.1rem;
         }
 
+        .update-info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #1565c0;
+        }
+
+        [data-theme="dark"] .update-info {
+            background-color: #1a2332;
+            border-left-color: #64B5F6;
+            color: #90caf9;
+        }
+
+        .update-info strong {
+            font-weight: 600;
+        }
+
+        /* Popup Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 0.8rem;
+        }
+
+        .modal-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .modal-button:hover {
+            opacity: 0.9;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.4rem;
@@ -435,6 +518,10 @@
     </div>
 
     <div class="controls">
+        <div class="update-info">
+            <strong>📅 Letzte Aktualisierung:</strong> 27.02.2026
+        </div>
+
         <div class="warning-box">
             <div class="warning-icon">⚠️</div>
             <div class="warning-text">
@@ -492,6 +579,18 @@
         <img class="overlay-image" id="overlayImage" src="" alt="QR Code">
     </div>
 
+    <!-- Popup Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">⚠️ Wichtiger Hinweis</div>
+            <div class="modal-body">
+                <p>Auf Wunsch der SV wurde der Link zu dieser Seite aus dem Teamchannel entfernt. Die Liste steht dort aktuell nicht mehr offiziell zur Verfügung; die Nutzung erfolgt daher auf eigenes Risiko.</p>
+                <p><strong>Bitte seid euch im Klaren darüber, wie und in welchem Rahmen ihr diese Webseite im Lager verwendet.</strong></p>
+            </div>
+            <button class="modal-button" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
     <script>
         let allProducts = [];
         let filteredProducts = [];
@@ -532,7 +631,7 @@
         // Load CSV data
         async function loadProducts() {
             try {
-                const response = await fetch('output.csv');
+                const response = await fetch('output.csv?t=' + Date.now());
                 const text = await response.text();
                 const lines = text.trim().split('\n');
 
@@ -721,9 +820,31 @@
             }
         });
 
+        // Modal functions
+        function showModal() {
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.classList.add('active');
+        }
+
+        function closeModal() {
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.classList.remove('active');
+            // Set flag in localStorage so modal doesn't show again
+            localStorage.setItem('disclaimerShown', 'true');
+        }
+
+        // Check if modal should be shown
+        function checkModal() {
+            const disclaimerShown = localStorage.getItem('disclaimerShown');
+            if (!disclaimerShown) {
+                showModal();
+            }
+        }
+
         // Initialize
         loadTheme();
         loadProducts();
+        checkModal();
     </script>
 </body>
 </html>

@@ -431,11 +431,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+            background-color: transparent;
+            z-index: 2000;
             justify-content: center;
             align-items: center;
             overflow-y: auto;
+            pointer-events: none;
         }
 
         .barcode-modal-overlay.active {
@@ -451,6 +452,7 @@
             max-height: 90vh;
             overflow-y: auto;
             margin: auto;
+            pointer-events: auto;
             position: relative;
         }
 
@@ -486,12 +488,27 @@
             background-color: #ccaa00;
         }
 
+        .qr-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+        }
+
+        .qr-popup-overlay.active {
+            display: block;
+        }
+
         .qr-popup {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
-            z-index: 2000;
+            z-index: 2001;
             opacity: 0;
             transition: all 0.3s ease;
         }
@@ -607,6 +624,7 @@
             bottom: 0;
             background-color: rgba(0, 0, 0, 0.3);
             z-index: 1999;
+            pointer-events: none;
         }
 
         .qr-overlay.active {
@@ -855,7 +873,10 @@
     </div>
 
     <!-- QR Overlay for expanded view -->
-    <div class="qr-overlay" id="qrOverlay" onclick="closeExpandedQR()"></div>
+    <div class="qr-overlay" id="qrOverlay"></div>
+
+    <!-- QR Popup Overlay for expanded QR in menu -->
+    <div class="qr-popup-overlay" id="qrPopupOverlay" onclick="closeExpandedQR()"></div>
 
     <!-- Easter Egg Barcode Modal -->
     <div class="barcode-modal-overlay" id="barcodeModal">
@@ -1184,6 +1205,10 @@
             if (modal) {
                 modal.classList.add('active');
             }
+            const overlay = document.getElementById('qrOverlay');
+            if (overlay) {
+                overlay.classList.add('active');
+            }
         }
 
         function closeBarcodeModal() {
@@ -1192,6 +1217,10 @@
                 modal.classList.remove('active');
             }
             closeExpandedQR();
+            const overlay = document.getElementById('qrOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
         }
 
         function expandQR(event) {
@@ -1207,7 +1236,7 @@
             const popup = document.createElement('div');
             popup.className = 'qr-popup';
             popup.innerHTML = `
-                <div class="qr-popup-content">
+                <div class="qr-popup-content" onclick="event.stopPropagation()">
                     <div class="qr-popup-label">${label.textContent}</div>
                     <img src="${img.src}" alt="${label.textContent}" class="qr-popup-image">
                 </div>
@@ -1221,13 +1250,14 @@
 
             document.body.appendChild(popup);
 
-            // Trigger animation
-            setTimeout(() => popup.classList.add('active'), 10);
-
-            const overlay = document.getElementById('qrOverlay');
+            // Activate overlay
+            const overlay = document.getElementById('qrPopupOverlay');
             if (overlay) {
                 overlay.classList.add('active');
             }
+
+            // Trigger animation
+            setTimeout(() => popup.classList.add('active'), 10);
         }
 
         function closeExpandedQR() {
@@ -1236,7 +1266,7 @@
                 popup.classList.remove('active');
                 setTimeout(() => popup.remove(), 300);
             }
-            const overlay = document.getElementById('qrOverlay');
+            const overlay = document.getElementById('qrPopupOverlay');
             if (overlay) {
                 overlay.classList.remove('active');
             }

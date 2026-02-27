@@ -373,6 +373,160 @@
             opacity: 0.9;
         }
 
+        /* Easter Egg Styles */
+        .easter-egg-button {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            animation: popIn 0.5s ease-out;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+
+        .easter-egg-button:hover {
+            background-color: #ff6666;
+            transform: scale(1.1);
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+                box-shadow: 0 0 0 rgba(255, 68, 68, 0.8);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            }
+        }
+
+        .barcode-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .barcode-modal-overlay.active {
+            display: flex;
+        }
+
+        .barcode-modal-content {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
+        }
+
+        .barcode-container {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .barcode-container:hover {
+            transform: scale(1.05);
+        }
+
+        .barcode-container.black-white {
+            background-color: #ffffff;
+            border: 2px solid #000000;
+        }
+
+        .barcode-container.orange {
+            background-color: #cc6600;
+        }
+
+        .barcode-container.green {
+            background-color: #00cc00;
+        }
+
+        .barcode-container.blue {
+            background-color: #6699ff;
+        }
+
+        .barcode-container.yellow {
+            background-color: #ccaa00;
+        }
+
+        .barcode-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+            color: inherit;
+        }
+
+        .barcode-container.black-white .barcode-text {
+            color: #000000;
+        }
+
+        .barcode-container.orange .barcode-text {
+            color: #ffffff;
+        }
+
+        .barcode-container.green .barcode-text {
+            color: #000000;
+        }
+
+        .barcode-container.blue .barcode-text {
+            color: #ffffff;
+        }
+
+        .barcode-container.yellow .barcode-text {
+            color: #000000;
+        }
+
+        .barcode-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .barcode-close-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .barcode-close-button:hover {
+            background-color: #1976d2;
+            transform: scale(1.05);
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.4rem;
@@ -511,9 +665,12 @@
                 <h1>GTIN Product Database</h1>
                 <div class="subtitle">Webseite bereitgestellt von Nando.</div>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()">
-                <span id="theme-icon">🌙 Dark Mode</span>
-            </button>
+            <div style="display: flex; align-items: center;">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙 Dark Mode</span>
+                </button>
+                <button class="easter-egg-button" id="easterEggButton" onclick="openBarcodeModal()" style="display: none;">🔓 Secret</button>
+            </div>
         </div>
     </div>
 
@@ -588,6 +745,69 @@
                 <p><strong>Bitte seid euch im Klaren darüber, wie und in welchem Rahmen ihr diese Webseite im Lager verwendet.</strong></p>
             </div>
             <button class="modal-button" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Easter Egg Barcode Modal -->
+    <div class="barcode-modal-overlay" id="barcodeModal">
+        <div class="barcode-modal-content">
+            <div class="barcode-container black-white">
+                <div class="barcode-label">21 Totes</div>
+                <div class="barcode-text">1700022137
+1700032884
+1400283206
+1400266235
+1700036729
+1700031926
+1700022647
+1400261137
+1700007465
+1400248300
+1700018126
+1400287896
+1400293924
+1400250174
+1400263516
+1400002081
+1400263668
+1700035354
+1400136637
+1700018775
+1700013533</div>
+            </div>
+
+            <div class="barcode-container orange">
+                <div class="barcode-label">12 Totes</div>
+                <div class="barcode-text">1700022137
+1700032884
+1400283206
+1400266235
+1700036729
+1700031926
+1700022647
+1400261137
+1700007465
+1400248300
+1700018126
+1400287896</div>
+            </div>
+
+            <div class="barcode-container green">
+                <div class="barcode-label">CONSO</div>
+                <div class="barcode-text">CONSOLIDATION</div>
+            </div>
+
+            <div class="barcode-container blue">
+                <div class="barcode-label">Null</div>
+                <div class="barcode-text">0</div>
+            </div>
+
+            <div class="barcode-container yellow">
+                <div class="barcode-label">UNKNOWN</div>
+                <div class="barcode-text">!! UNKNOWN !!</div>
+            </div>
+
+            <button class="barcode-close-button" onclick="closeBarcodeModal()">Schließen</button>
         </div>
     </div>
 
@@ -840,6 +1060,70 @@
                 showModal();
             }
         }
+
+        // Easter Egg: Triple-click detection on title
+        let titleClickCount = 0;
+        let titleClickTimeout;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleElement = document.querySelector('h1');
+            if (titleElement) {
+                titleElement.addEventListener('click', function() {
+                    titleClickCount++;
+
+                    // Clear timeout if exists
+                    if (titleClickTimeout) {
+                        clearTimeout(titleClickTimeout);
+                    }
+
+                    // Reset counter after 1 second of no clicks
+                    titleClickTimeout = setTimeout(() => {
+                        titleClickCount = 0;
+                    }, 1000);
+
+                    // Show button on 3rd click
+                    if (titleClickCount === 3) {
+                        showEasterEggButton();
+                        titleClickCount = 0;
+                    }
+                });
+            }
+        });
+
+        function showEasterEggButton() {
+            const button = document.getElementById('easterEggButton');
+            if (button) {
+                button.style.display = 'inline-block';
+                // Add a subtle animation pulse
+                button.style.animation = 'popIn 0.5s ease-out';
+            }
+        }
+
+        function openBarcodeModal() {
+            const modal = document.getElementById('barcodeModal');
+            if (modal) {
+                modal.classList.add('active');
+            }
+        }
+
+        function closeBarcodeModal() {
+            const modal = document.getElementById('barcodeModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const barcodeModal = document.getElementById('barcodeModal');
+            if (barcodeModal) {
+                barcodeModal.addEventListener('click', function(e) {
+                    if (e.target === barcodeModal) {
+                        closeBarcodeModal();
+                    }
+                });
+            }
+        });
 
         // Initialize
         loadTheme();

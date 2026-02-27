@@ -22,6 +22,7 @@ A modern, responsive web application for managing and displaying product informa
 - **Dynamic generation** - QR codes are generated on-the-fly from GTIN numbers
 - **Lazy loading** - QR codes only load when visible in viewport for optimal performance
 - **Interactive overlay** - Click any QR code to view an enlarged version
+- **Dual overlay system** - Tap once to close enlarged QR code, tap again to close menu
 - **High quality** - Generates crisp, scannable QR codes in PNG format
 
 ### 🎨 User Interface
@@ -161,11 +162,20 @@ https://gtin.bocchi.network/api.php?text=4260046983507&size=300
 4. **View QR codes**
    - Scroll through the table - QR codes load automatically
    - Click any QR code to view enlarged version
-   - Click outside or press ESC to close overlay
+   - **Dual overlay interaction**:
+     - First tap on dark background → Closes enlarged QR code
+     - Second tap on dark background → Closes the menu
+   - Press ESC to close overlay
 
 5. **Toggle theme**
    - Click the theme button in the header
    - Preference is saved automatically
+
+6. **Easter Egg Menu (Outbound)**
+   - Hidden menu accessible via easter egg button
+   - Contains pre-configured QR codes for common shipment types
+   - Background darkens when menu is open
+   - Same dual overlay interaction for viewing enlarged QR codes
 
 ## Browser Support
 

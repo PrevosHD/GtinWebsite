@@ -5,8 +5,8 @@ $size = (int)($_GET['size'] ?? 200);
 $fg = $_GET['fg'] ?? '000000'; // Foreground color (QR code)
 $bg = $_GET['bg'] ?? 'ffffff'; // Background color
 
-// Validierung
-if (empty($text)) {
+// Validierung (check if text parameter exists, not if it's empty - "0" is valid!)
+if (!isset($_GET['text'])) {
     header('HTTP/1.1 400 Bad Request');
     echo 'Missing text parameter';
     exit;
